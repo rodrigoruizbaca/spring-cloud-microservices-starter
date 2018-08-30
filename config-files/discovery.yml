@@ -1,0 +1,17 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: config
+eureka:
+  instance:
+    hostname: localhost
+    metadataMap:
+      instanceId:
+        ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8082/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+
