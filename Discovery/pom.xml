@@ -33,6 +33,11 @@
             <artifactId>guava</artifactId>
             <version>15.0</version>
         </dependency> 
+<dependency>
+    <groupId>io.reactivex.rxjava2</groupId>
+    <artifactId>rxjava</artifactId>
+</dependency>
+        
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -65,7 +70,7 @@
 						<configuration>
 							<classifier>spring-boot</classifier>
 							<mainClass>
-								com.easyrun.discovery.Application
+								com.easyrun.discovery.DiscoveryApplication
 							</mainClass>
 							<outputDirectory>${project.build.directory}/../docker</outputDirectory>
 
