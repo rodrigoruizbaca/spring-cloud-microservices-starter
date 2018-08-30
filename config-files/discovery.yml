@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8082
 spring:
   application:
     name: config
@@ -14,4 +14,8 @@ eureka:
       defaultZone: http://localhost:8082/eureka/
     register-with-eureka: false
     fetch-registry: false
-
+rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

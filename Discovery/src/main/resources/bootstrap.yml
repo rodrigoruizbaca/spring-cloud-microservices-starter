@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    config:
+      name: discovery
+      uri: http://localhost:8081
+    bus:
+      enabled: true  
+management:
+  security:
+    enabled: false
