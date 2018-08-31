@@ -1,4 +1,4 @@
 spring:
   cloud:
     config:
-      name: discovery
+      name: auth

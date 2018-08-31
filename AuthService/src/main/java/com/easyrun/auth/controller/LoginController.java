@@ -19,7 +19,8 @@ import com.easyrun.commons.dto.UserDto;
 @CrossOrigin
 @RequestMapping(value="auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoginController {
-	@PostMapping("token")
+	
+	@PostMapping("login")
 	public @ResponseBody TokenDto generateToken() {
 		SecurityContext context = SecurityContextHolder.getContext();
 		UserDto user = (UserDto)context.getAuthentication().getPrincipal();

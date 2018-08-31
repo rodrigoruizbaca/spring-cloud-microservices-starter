@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 9090
 spring:
   cloud:
     bus:
@@ -15,9 +15,7 @@ eureka:
         ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     serviceUrl:
-      defaultZone: http://localhost:8082/eureka/
-    register-with-eureka: false
-    fetch-registry: false
+      defaultZone: http://localhost:8082/eureka/    
 rabbitmq:
     host: localhost
     port: 5672
