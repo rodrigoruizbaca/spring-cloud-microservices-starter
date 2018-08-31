@@ -63,6 +63,7 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 				    claims.setNotBeforeMinutesInThePast(2); // time before which the token is not yet valid (2 minutes ago)
 				    claims.setSubject(resultUser.getUsername()); // additional claims/attributes about the subject can be added
 				    claims.setClaim("id", resultUser.getId());
+				    //Get roles
 				    List<String> scope = Arrays.asList("easyrun.user.token");
 				    claims.setStringListClaim("scope", scope);
 				    JsonWebSignature jws = new JsonWebSignature();

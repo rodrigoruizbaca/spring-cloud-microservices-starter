@@ -53,8 +53,8 @@ public class AuthenticationTokenProvider implements AuthenticationProvider {
 			JwtConsumer jwtConsumer = new JwtConsumerBuilder()
 		            .setRequireExpirationTime() // the JWT must have an expiration time
 		            .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
-		            .setExpectedIssuer("auth") // whom the JWT needs to have been issued by
-		            .setExpectedAudience("tacool.students") // to whom the JWT is intended for
+		            .setExpectedIssuer("easyrun.auth") // whom the JWT needs to have been issued by
+		            .setExpectedAudience("easyrun.user") // to whom the JWT is intended for
 		            .setVerificationKeyResolver(jwksVerificationKeyResolver)// verify the signature with the public key
 		            .build();
 			
