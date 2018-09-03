@@ -11,7 +11,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "com.easyrun.auth.repository")
+@EnableMongoRepositories(basePackages = {"com.easyrun.auth.repository", "com.easyrun.commons.repository"})
 public class MongoConfig extends AbstractMongoConfiguration {
 
 	@Value("${mongo.uri}")
@@ -20,7 +20,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 	@Value("${mongo.databaseName}")
 	private String databaseName;
 
-	// mongodb+srv://starter:<PASSWORD>@cluster0-wzmuc.mongodb.net/test?retryWrites=true
 
 	@Override
 	public MongoClient mongoClient() {

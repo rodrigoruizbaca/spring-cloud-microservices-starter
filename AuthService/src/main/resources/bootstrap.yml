@@ -2,3 +2,4 @@ spring:
   cloud:
     config:
       name: auth
+      uri: http://localhost:8081
