@@ -9,19 +9,24 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import com.easyrun.commons.model.SpringSecurityAuditorAware;
+
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
+@EnableMongoAuditing
 public class AuthApplication {
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(AuthApplication.class, args);
-	}	
-	
+	}
+
 	@Bean
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
@@ -29,18 +34,23 @@ public class AuthApplication {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-	    return new BCryptPasswordEncoder();
+		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public RsaJsonWebKey getRsaJsonWebKey() throws Exception {
-		RsaJsonWebKey rsaJsonWebKey =  RsaJwkGenerator.generateJwk(2048);
+		RsaJsonWebKey rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
 		rsaJsonWebKey.setKeyId(getKeyId());
 		return rsaJsonWebKey;
 	}
-	
-	@Bean 
+
+	@Bean
 	public String getKeyId() {
 		return UUID.randomUUID().toString();
+	}
+
+	@Bean
+	public AuditorAware<String> myAuditorProvider() {
+		return new SpringSecurityAuditorAware();
 	}
 }

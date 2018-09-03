@@ -56,7 +56,7 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 					UserDto resultUser = userTransformer.toDto(u);
 					JwtClaims claims = new JwtClaims();
 				    claims.setIssuer("easyrun.auth");  // who creates the token and signs it
-				    claims.setAudience("easyrun.user"); // to whom the token is intended to be sent
+				    claims.setAudience(resultUser.getAudience()); // to whom the token is intended to be sent
 				    claims.setExpirationTimeMinutesInTheFuture(10); // time when the token will expire (10 minutes from now)
 				    claims.setGeneratedJwtId(); // a unique identifier for the token
 				    claims.setIssuedAtToNow();  // when the token was issued/created (now)

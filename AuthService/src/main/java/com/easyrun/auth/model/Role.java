@@ -8,13 +8,10 @@ import com.easyrun.commons.model.Auditable;
 
 import lombok.Getter;
 import lombok.Setter;
-
 @Getter
 @Setter
 @Document
-public class User extends Auditable<String> {	
-	private String username;
-	private String password;
-	private String audience;
-	private List<String> roles;
+public class Role extends Auditable<String> {
+	private List<String> permissions;
+	private String roleCd;
 }

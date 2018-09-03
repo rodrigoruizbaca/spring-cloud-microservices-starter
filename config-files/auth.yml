@@ -21,3 +21,6 @@ rabbitmq:
     port: 5672
     username: guest
     password: guest
+mongo:
+  uri: mongodb+srv://starter:starter@cluster0-lpgfm.mongodb.net/test?retryWrites=true  
+  databaseName: auth
