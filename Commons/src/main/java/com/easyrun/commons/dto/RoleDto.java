@@ -1,16 +1,15 @@
 package com.easyrun.commons.dto;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 @Getter
 @Setter
 @Data
-public class UserDto {
+public class RoleDto {
 	private String id;
-	private String username;
-	private String password;
-	private String token;
-	private String audience;
+	private String roleCd;
+	private List<String> permissions;
 }

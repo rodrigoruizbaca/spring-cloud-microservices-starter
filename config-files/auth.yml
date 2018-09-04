@@ -24,3 +24,6 @@ rabbitmq:
 mongo:
   uri: mongodb+srv://starter:starter@cluster0-lpgfm.mongodb.net/test?retryWrites=true  
   databaseName: auth
+services:
+  auth:
+    name: auth

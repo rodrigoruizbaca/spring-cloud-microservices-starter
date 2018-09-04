@@ -1,7 +1,7 @@
 package com.easyrun.auth.security;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -17,14 +17,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
+import com.easyrun.auth.repository.RoleRepository;
 import com.easyrun.auth.repository.UserRepository;
 import com.easyrun.auth.security.exception.InvalidUsernamePasswordException;
 import com.easyrun.auth.security.exception.TokenGenerationException;
 import com.easyrun.auth.transformer.UserTransformer;
 import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.repository.ConfigurationRepository;
-import com.google.common.collect.Lists;
 
 
 @Component
@@ -35,6 +36,9 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 	
 	@Autowired
 	protected UserRepository userRepository;
+	
+	@Autowired
+	protected RoleRepository roleRepository;
 	
 	@Autowired
 	protected UserTransformer userTransformer;
@@ -54,6 +58,8 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 			if (u != null && passwordEncoder.matches(user.getPassword(), u.getPassword())) {
 				try {
 					UserDto resultUser = userTransformer.toDto(u);
+					List<String> roleIds = u.getRoles();
+					List<Role> roles = roleRepository.getRolesByIdIn(roleIds);
 					JwtClaims claims = new JwtClaims();
 				    claims.setIssuer("easyrun.auth");  // who creates the token and signs it
 				    claims.setAudience(resultUser.getAudience()); // to whom the token is intended to be sent
@@ -64,7 +70,12 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 				    claims.setSubject(resultUser.getUsername()); // additional claims/attributes about the subject can be added
 				    claims.setClaim("id", resultUser.getId());
 				    //Get roles
-				    List<String> scope = Arrays.asList("easyrun.user.token");
+				    List<GrantedAuthority> authorities = roles.stream().
+							flatMap(r -> r.getPermissions().stream()).
+							map(p -> new SimpleGrantedAuthority(p)).
+							collect(Collectors.toList());
+				    
+				    List<String> scope = authorities.stream().map(a -> a.getAuthority()).collect(Collectors.toList());
 				    claims.setStringListClaim("scope", scope);
 				    JsonWebSignature jws = new JsonWebSignature();
 				    // The payload of the JWS is JSON content of the JWT Claims
@@ -87,8 +98,7 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 				    // of a JsonWebEncryption object and set the cty (Content Type) header to "jwt".
 					String jwt = jws.getCompactSerialization();
 					resultUser.setToken(jwt);
-					List<GrantedAuthority> authorities = Lists.newArrayList();
-					authorities.add(new SimpleGrantedAuthority("easyrun.user.token"));
+					
 					UsernamePasswordAuthentication resultAuth = new UsernamePasswordAuthentication(resultUser, authorities);
 					resultAuth.setAuthenticated(true);
 					return resultAuth;

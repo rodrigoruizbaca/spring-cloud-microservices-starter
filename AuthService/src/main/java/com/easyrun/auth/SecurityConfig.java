@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 import com.easyrun.auth.security.UsernamePasswordAuthentitationProvider;
 import com.easyrun.auth.security.UsernamePasswordFilter;
+import com.easyrun.commons.security.AuthenticationTokenFilter;
+import com.easyrun.commons.security.AuthenticationTokenProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -20,9 +22,12 @@ import com.easyrun.auth.security.UsernamePasswordFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UsernamePasswordAuthentitationProvider usernamePasswordAuthentitationProvider;
+	
+	@Autowired
+	private AuthenticationTokenProvider authenticationTokenProvider;
 
 	public String[] getIgnoredUrls() {
-		return new String[] { "/encode/**" };
+		return new String[] { "/encode/**", "/JWK/**" };
 	}
 
 	@Override
@@ -33,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(usernamePasswordAuthentitationProvider);
+		auth.authenticationProvider(authenticationTokenProvider);
 	}
 
 	@Override
@@ -45,5 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UsernamePasswordFilter getUsernamePasswordFilter() throws Exception {
 		return new UsernamePasswordFilter(this.getIgnoredUrls(), authenticationManager());
+	}
+	
+	@Bean
+	public AuthenticationTokenFilter getAuthenticationTokenFilter() throws Exception {
+		return new AuthenticationTokenFilter(authenticationManager());
 	}
 }
