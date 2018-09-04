@@ -58,7 +58,7 @@ public class StartupInit {
 		superAdminRole.setRoleCd("SUPER_ADMIN");
 		Optional<Role> entity = roleRepository.findOne(Example.of(superAdminRole));
 		if (!entity.isPresent()) {
-			superAdminRole.setPermissions(Arrays.asList(new String[]{"super-admin"}));
+			superAdminRole.setPermissions(Arrays.asList(new String[]{"add-role", "add-user"}));
 			roleRepository.insert(superAdminRole);
 		}
 		User superUser = new User();

@@ -21,12 +21,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import com.easyrun.commons.dto.ConfigurationDto;
 import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.repository.AuthenticationService;
 import com.easyrun.commons.security.exception.MalformedTokenException;
-
+@Component
 public class AuthenticationTokenProvider implements AuthenticationProvider {
 	
 	@Autowired

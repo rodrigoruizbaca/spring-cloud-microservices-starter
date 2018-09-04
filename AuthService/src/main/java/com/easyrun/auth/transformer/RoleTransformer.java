@@ -1,11 +1,12 @@
 package com.easyrun.auth.transformer;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
 import com.easyrun.auth.model.Role;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.transformer.Transformer;
-
+@Component
 public class RoleTransformer  implements Transformer<RoleDto, Role>{
 
 	@Override

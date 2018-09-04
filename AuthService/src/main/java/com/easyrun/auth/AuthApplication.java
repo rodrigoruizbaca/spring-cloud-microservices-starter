@@ -4,27 +4,63 @@ import java.util.UUID;
 
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 import com.easyrun.commons.model.SpringSecurityAuditorAware;
-
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+@Order(1)
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
 @EnableMongoAuditing
-@ComponentScan({"com.easyrun.commons"})
-public class AuthApplication {
+@EnableMongoRepositories(basePackages = {"com.easyrun.auth.repository", "com.easyrun.commons.repository"})
+@ComponentScan({"com.easyrun.commons", "com.easyrun.auth"})
+public class AuthApplication extends AbstractMongoConfiguration {
 
+	@Value("${spring.data.mongo.uri}")
+	private String mongoUri;
+
+	@Value("${spring.data.mongo.databaseName}")
+	private String databaseName;
+
+
+	@Override
+	public MongoClient mongoClient() {
+		MongoClientURI uri = new MongoClientURI(mongoUri);
+		MongoClient mongoClient = new MongoClient(uri);
+		return mongoClient;
+	}
+
+
+	@Override
+	protected String getDatabaseName() {
+		return databaseName;
+	}
+	
+	@Bean
+	public MongoDbFactory mongo() {		
+		SimpleMongoDbFactory factory = new SimpleMongoDbFactory(mongoClient(), databaseName);	    
+	    return factory;
+	}
+
+	
 	public static void main(String[] args) {
 		SpringApplication.run(AuthApplication.class, args);
 	}

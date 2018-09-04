@@ -23,13 +23,13 @@ public class AuthController {
 	private AuthService authService;
 	
 	@PostMapping("role")	
-	@PreAuthorize(value = "hasAnyAuthority=(super-admin)")
+	@PreAuthorize(value = "hasAnyAuthority=(add-role)")
 	public @ResponseBody RoleDto addrole(@RequestBody RoleDto role) {
 		return authService.addRole(role);
 	}
 	
 	@PostMapping("user")	
-	@PreAuthorize(value = "hasAnyAuthority=(super-admin)")
+	@PreAuthorize(value = "hasAnyAuthority=(add-user)")
 	public @ResponseBody UserDto addUser(@RequestBody UserDto user) {
 		return authService.addUser(user);
 	}

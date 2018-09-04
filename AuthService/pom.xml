@@ -23,7 +23,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.easyrun.commons</groupId>
-			<artifactId>Commons</artifactId>
+			<artifactId>commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
