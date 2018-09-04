@@ -7,6 +7,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +21,7 @@ import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.security.AbstractUsernamePasswordFilter;
 
 import lombok.Getter;
-
+@WebFilter(urlPatterns = "/auth/login")
 public class UsernamePasswordFilter extends AbstractUsernamePasswordFilter {
 
 	private AuthenticationManager authenticationManager;

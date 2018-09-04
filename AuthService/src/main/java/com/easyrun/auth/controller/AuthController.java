@@ -16,7 +16,7 @@ import com.easyrun.commons.dto.UserDto;
 
 @RestController()
 @CrossOrigin
-@RequestMapping(value="auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="auth/oper", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 	
 	@Autowired

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import com.easyrun.auth.security.AuthenticationTokenAuthFilter;
 import com.easyrun.auth.security.UsernamePasswordAuthentitationProvider;
 import com.easyrun.auth.security.UsernamePasswordFilter;
 import com.easyrun.commons.security.AuthenticationTokenFilter;
@@ -56,6 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	public AuthenticationTokenFilter getAuthenticationTokenFilter() throws Exception {
-		return new AuthenticationTokenFilter(authenticationManager());
+		return new AuthenticationTokenAuthFilter(authenticationManager());
 	}
 }
