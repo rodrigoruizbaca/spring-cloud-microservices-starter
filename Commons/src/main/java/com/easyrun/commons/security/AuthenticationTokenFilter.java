@@ -69,7 +69,7 @@ public class AuthenticationTokenFilter extends AbstractUsernamePasswordFilter {
 
 	@Override
 	public String[] getIgnoredUrls() {
-		return new String[]{"/public/**"};
+		return new String[]{"/public/**", "/JWK/**"};
 	}
 
 }

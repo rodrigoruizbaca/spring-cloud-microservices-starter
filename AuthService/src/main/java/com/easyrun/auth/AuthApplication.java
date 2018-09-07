@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.client.RestTemplate;
 
 import com.easyrun.commons.model.SpringSecurityAuditorAware;
 import com.mongodb.MongoClient;
@@ -65,10 +64,6 @@ public class AuthApplication extends AbstractMongoConfiguration {
 		SpringApplication.run(AuthApplication.class, args);
 	}
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

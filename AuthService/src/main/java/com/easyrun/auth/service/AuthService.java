@@ -1,5 +1,7 @@
 package com.easyrun.auth.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -8,10 +10,14 @@ import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
 import com.easyrun.auth.repository.RoleRepository;
 import com.easyrun.auth.repository.UserRepository;
+import com.easyrun.auth.transformer.ConfigurationTransformer;
 import com.easyrun.auth.transformer.RoleTransformer;
 import com.easyrun.auth.transformer.UserTransformer;
+import com.easyrun.commons.dto.ConfigurationDto;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.dto.UserDto;
+import com.easyrun.commons.model.Configuration;
+import com.easyrun.commons.repository.ConfigurationRepository;
 
 @Service
 public class AuthService {
@@ -20,6 +26,12 @@ public class AuthService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private ConfigurationRepository configurationRepository;
+	
+	@Autowired
+	private ConfigurationTransformer configurationTransformer;
 	
 	@Autowired
 	private RoleTransformer roleTransfomer;
@@ -43,5 +55,10 @@ public class AuthService {
 			return userTransfomer.toDto(userRepository.insert(entity));
 		}
 		throw new DuplicateKeyException("The username " + user.getUsername() + " already exists");
+	}
+	
+	public List<ConfigurationDto> getPublicKeys() {
+		List<Configuration> configs = configurationRepository.getConfigurationByName("PUBLIC_KEY");
+		return configurationTransformer.toDtoLst(configs);
 	}
 }

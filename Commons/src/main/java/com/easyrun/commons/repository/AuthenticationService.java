@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.easyrun.commons.dto.ConfigurationDto;
+import com.easyrun.commons.rest.CloudRestTemplate;
 
 @Service
 public class AuthenticationService {
@@ -22,11 +22,11 @@ public class AuthenticationService {
 	private LoadBalancerClient loadBalancer;
 	
 	@Autowired
-	private RestTemplate restTemplate;
+	private CloudRestTemplate restTemplate;
 	
 	public List<ConfigurationDto> getPublicKeys() {
 		ServiceInstance instance = loadBalancer.choose(authServiceName);
-		ConfigurationDto[] response = restTemplate.getForObject(instance + "/JWK", ConfigurationDto[].class);
+		ConfigurationDto[] response = restTemplate.getForObject(instance.getUri() + "/auth/JWK", ConfigurationDto[].class);
 		return Arrays.asList(response);
 	}
 }
