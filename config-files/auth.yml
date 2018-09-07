@@ -8,6 +8,8 @@ spring:
     mongo:
       uri: mongodb+srv://starter:starter@cluster0-lpgfm.mongodb.net/test?retryWrites=true  
       databaseName: auth
+  application:
+    name: auth
 management:
   security:
     enabled: false  

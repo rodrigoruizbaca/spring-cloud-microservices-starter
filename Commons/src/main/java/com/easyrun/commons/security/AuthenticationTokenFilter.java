@@ -18,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.security.exception.InvalidTokenException;
-
 public class AuthenticationTokenFilter extends AbstractUsernamePasswordFilter {
 
 	private AuthenticationManager authenticationManager;
@@ -36,9 +35,11 @@ public class AuthenticationTokenFilter extends AbstractUsernamePasswordFilter {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String urlPath = httpServletRequest.getServletPath();
-		if (!super.isIgnored(urlPath) && !httpServletRequest.getMethod().equalsIgnoreCase("options")) {
-			
+		
+		boolean skip = httpServletRequest.getAttribute("excludeFilerToken") != null ? (Boolean)httpServletRequest.getAttribute("excludeFilerToken") : false;
+		
 				
+		if (!super.isIgnored(urlPath) && !httpServletRequest.getMethod().equalsIgnoreCase("options") && !skip) {							
 			try {
 				String header = httpServletRequest.getHeader("x-auth");
 		        // Make sure the header has the JWT token in it

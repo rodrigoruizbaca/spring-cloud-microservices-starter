@@ -42,10 +42,17 @@ public class UsernamePasswordFilter extends AbstractUsernamePasswordFilter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
 		String urlPath = httpServletRequest.getServletPath();
-
-		if (!super.isIgnored(urlPath)) {
+		
+		if (httpServletRequest.getHeader("x-auth") != null) {
+			chain.doFilter(request, response);
+		} else if (!super.isIgnored(urlPath)) {			
 			String username = httpServletRequest.getParameter("username");
 			String password = httpServletRequest.getParameter("password");
+			if (username == null || password == null) {
+				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access denied");
+				return;
+			}
+			request.setAttribute("excludeFilerToken", true);
 			UserDto u = new UserDto();
 			u.setUsername(username);
 			u.setPassword(password);
@@ -59,9 +66,10 @@ public class UsernamePasswordFilter extends AbstractUsernamePasswordFilter {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
 				return;
 			}
+			chain.doFilter(request, response);
+		} else {
+			chain.doFilter(request, response);
 		}
-
-		chain.doFilter(request, response);
 
 	}
 
