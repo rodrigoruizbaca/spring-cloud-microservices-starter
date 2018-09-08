@@ -12,12 +12,12 @@ import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.easyrun.auth.model.Configuration;
 import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
+import com.easyrun.auth.repository.ConfigurationRepository;
 import com.easyrun.auth.repository.RoleRepository;
 import com.easyrun.auth.repository.UserRepository;
-import com.easyrun.commons.model.Configuration;
-import com.easyrun.commons.repository.ConfigurationRepository;
 
 @Component
 public class StartupInit {

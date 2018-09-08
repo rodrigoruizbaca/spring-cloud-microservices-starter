@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 
 import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
+import com.easyrun.auth.repository.ConfigurationRepository;
 import com.easyrun.auth.repository.RoleRepository;
 import com.easyrun.auth.repository.UserRepository;
 import com.easyrun.auth.security.exception.InvalidUsernamePasswordException;
 import com.easyrun.auth.security.exception.TokenGenerationException;
 import com.easyrun.auth.transformer.UserTransformer;
 import com.easyrun.commons.dto.UserDto;
-import com.easyrun.commons.repository.ConfigurationRepository;
 
 
 @Component
@@ -62,7 +62,7 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 					List<Role> roles = roleRepository.getRolesByIdIn(roleIds);
 					JwtClaims claims = new JwtClaims();
 				    claims.setIssuer("easyrun.auth");  // who creates the token and signs it
-				    claims.setAudience(resultUser.getAudience()); // to whom the token is intended to be sent
+				    claims.setAudience("easyrun.user"); // to whom the token is intended to be sent
 				    claims.setExpirationTimeMinutesInTheFuture(10); // time when the token will expire (10 minutes from now)
 				    claims.setGeneratedJwtId(); // a unique identifier for the token
 				    claims.setIssuedAtToNow();  // when the token was issued/created (now)

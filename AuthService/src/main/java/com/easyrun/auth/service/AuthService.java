@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import com.easyrun.auth.model.Configuration;
 import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
+import com.easyrun.auth.repository.ConfigurationRepository;
 import com.easyrun.auth.repository.RoleRepository;
 import com.easyrun.auth.repository.UserRepository;
 import com.easyrun.auth.transformer.ConfigurationTransformer;
@@ -16,8 +18,6 @@ import com.easyrun.auth.transformer.UserTransformer;
 import com.easyrun.commons.dto.ConfigurationDto;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.dto.UserDto;
-import com.easyrun.commons.model.Configuration;
-import com.easyrun.commons.repository.ConfigurationRepository;
 
 @Service
 public class AuthService {

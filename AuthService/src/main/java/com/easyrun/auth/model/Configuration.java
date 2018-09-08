@@ -1,4 +1,4 @@
-package com.easyrun.commons.model;
+package com.easyrun.auth.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
