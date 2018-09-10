@@ -34,4 +34,4 @@ eureka:
       defaultZone: http://localhost:8082/eureka/    
 services:
   auth:
-    name: auth1
+    name: auth
