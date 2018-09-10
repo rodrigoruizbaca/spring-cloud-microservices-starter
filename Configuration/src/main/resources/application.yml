@@ -9,6 +9,8 @@ spring:
         git:
           uri: https://github.com/rodrigoruizbaca/spring-cloud-microservices-starter.git
           searchPaths: config-files
+    bus:
+      enabled: true
   rabbitmq:
     host: localhost
     port: 5672
