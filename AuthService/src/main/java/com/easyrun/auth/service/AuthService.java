@@ -1,9 +1,11 @@
 package com.easyrun.auth.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.easyrun.auth.model.Configuration;
@@ -46,6 +48,26 @@ public class AuthService {
 			return roleTransfomer.toDto(roleRepository.insert(entity));
 		}
 		throw new DuplicateKeyException("The key for role" + role.getRoleCd() + " already exists");
+	}
+	
+	public RoleDto updateRole(RoleDto role, String id) {
+		Optional<Role> optional = roleRepository.findById(id);		
+		if (optional.isPresent()) {
+			Role entity = optional.get();			
+			entity.setPermissions(role.getPermissions());
+			return roleTransfomer.toDto(roleRepository.save(entity));
+		} else {
+			throw new RecoverableDataAccessException("The role with id " + id + " does not exists");
+		}		
+	}
+	
+	public void deleteRole(String id) {
+		Optional<Role> optional = roleRepository.findById(id);
+		if (optional.isPresent()) {			
+			roleRepository.deleteById(id);
+		} else {
+			throw new RecoverableDataAccessException("The role with id " + id + " does not exists");
+		}		
 	}
 	
 	public UserDto addUser(UserDto user) {
