@@ -4,6 +4,11 @@ spring:
   cloud:
     bus:
       enabled: true  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 management:
   security:
     enabled: false  
@@ -18,8 +23,3 @@ eureka:
       defaultZone: http://localhost:8082/eureka/
     register-with-eureka: false
     fetch-registry: false
-rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
