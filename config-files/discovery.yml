@@ -11,7 +11,12 @@ spring:
     password: guest
 management:
   security:
-    enabled: false  
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+          bus-refresh  
 eureka:
   instance:
     hostname: localhost
