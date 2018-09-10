@@ -29,4 +29,4 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
 rodrigo:
-  test: Hola morning all
+  test: Rodrigo Ruiz
