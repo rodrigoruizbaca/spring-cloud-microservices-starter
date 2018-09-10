@@ -3,6 +3,7 @@ package com.easyrun.discovery.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import com.google.common.collect.Maps;
 @RestController()
 @CrossOrigin
 @RequestMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
+@RefreshScope
 public class DiscoveryController {
 	
 	@Value("${rodrigo.test}")
