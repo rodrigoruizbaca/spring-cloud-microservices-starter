@@ -1,4 +1,4 @@
-package com.easyrun.commons.repository;
+package com.easyrun.commons.service;
 
 import java.util.Arrays;
 import java.util.List;

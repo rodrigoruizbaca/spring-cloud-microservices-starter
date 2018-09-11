@@ -1,6 +1,6 @@
 package com.easyrun.commons.exception;
 
-public class DuplicateEntityException extends RuntimeException {
+public class DuplicateEntityException extends Exception {
 		
 	/**
 	 * 

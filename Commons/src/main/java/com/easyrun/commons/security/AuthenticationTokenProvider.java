@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 
 import com.easyrun.commons.dto.ConfigurationDto;
 import com.easyrun.commons.dto.UserDto;
-import com.easyrun.commons.repository.AuthenticationService;
 import com.easyrun.commons.security.exception.MalformedTokenException;
+import com.easyrun.commons.service.AuthenticationService;
 @Component
 public class AuthenticationTokenProvider implements AuthenticationProvider {
 	

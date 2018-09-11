@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.easyrun.auth.model.Configuration;
@@ -20,6 +20,7 @@ import com.easyrun.auth.transformer.UserTransformer;
 import com.easyrun.commons.dto.ConfigurationDto;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.dto.UserDto;
+import com.easyrun.commons.exception.EntityNotFoundException;
 
 @Service
 public class AuthService {
@@ -41,6 +42,9 @@ public class AuthService {
 	@Autowired
 	private UserTransformer userTransfomer;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	public RoleDto addRole(RoleDto role) {
 		Role entity = roleRepository.getByRoleCd(role.getRoleCd());
 		if (entity == null) {
@@ -50,23 +54,27 @@ public class AuthService {
 		throw new DuplicateKeyException("The key for role" + role.getRoleCd() + " already exists");
 	}
 	
-	public RoleDto updateRole(RoleDto role, String id) {
+	public List<RoleDto> getRoles() {		
+		return roleTransfomer.toDtoLst(roleRepository.findAll());				
+	}
+	
+	public RoleDto updateRole(RoleDto role, String id) throws EntityNotFoundException {
 		Optional<Role> optional = roleRepository.findById(id);		
 		if (optional.isPresent()) {
 			Role entity = optional.get();			
 			entity.setPermissions(role.getPermissions());
 			return roleTransfomer.toDto(roleRepository.save(entity));
 		} else {
-			throw new RecoverableDataAccessException("The role with id " + id + " does not exists");
+			throw new EntityNotFoundException("The role with id " + id + " does not exists");
 		}		
 	}
 	
-	public void deleteRole(String id) {
+	public void deleteRole(String id) throws EntityNotFoundException {
 		Optional<Role> optional = roleRepository.findById(id);
 		if (optional.isPresent()) {			
 			roleRepository.deleteById(id);
 		} else {
-			throw new RecoverableDataAccessException("The role with id " + id + " does not exists");
+			throw new EntityNotFoundException("The role with id " + id + " does not exists");
 		}		
 	}
 	
@@ -74,9 +82,36 @@ public class AuthService {
 		User entity = userRepository.getByUsername(user.getUsername());
 		if (entity == null) {
 			entity = userTransfomer.toDomain(user);
+			entity.setPassword(encoder.encode(user.getPassword()));
 			return userTransfomer.toDto(userRepository.insert(entity));
 		}
 		throw new DuplicateKeyException("The username " + user.getUsername() + " already exists");
+	}
+	
+	
+	public List<UserDto> getUsers() {		
+		return userTransfomer.toDtoLst(userRepository.findAll());				
+	}
+	
+	public UserDto updateUser(UserDto user, String id) throws EntityNotFoundException {
+		Optional<User> optional = userRepository.findById(id);		
+		if (optional.isPresent()) {
+			User entity = optional.get();			
+			entity.setPassword(encoder.encode(user.getPassword()));
+			entity.setRoles(user.getRoles());
+			return userTransfomer.toDto(userRepository.save(entity));
+		} else {
+			throw new EntityNotFoundException("The user with id " + id + " does not exists");
+		}		
+	}
+	
+	public void deleteUser(String id) throws EntityNotFoundException {
+		Optional<User> optional = userRepository.findById(id);
+		if (optional.isPresent()) {			
+			userRepository.deleteById(id);
+		} else {
+			throw new EntityNotFoundException("The user with id " + id + " does not exists");
+		}		
 	}
 	
 	public List<ConfigurationDto> getPublicKeys() {
