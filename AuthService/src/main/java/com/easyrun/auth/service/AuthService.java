@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.easyrun.auth.model.Configuration;
 import com.easyrun.auth.model.QRole;
+import com.easyrun.auth.model.QUser;
 import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
 import com.easyrun.auth.repository.ConfigurationRepository;
@@ -112,9 +113,22 @@ public class AuthService {
 		throw new DuplicateKeyException("The username " + user.getUsername() + " already exists");
 	}
 	
+	public Page<UserDto> getUsers(Pageable pageable) {		
+		return getUsers(pageable, null);
+	}
 	
-	public List<UserDto> getUsers() {		
-		return userTransfomer.toDtoLst(userRepository.findAll());				
+	public Page<UserDto> getUsers(Pageable pageable, String search) {
+		Page<User> entityPage = null;
+		if (search != null) {
+			Node rootNode = new RSQLParser().parse(search);
+			EasyCustomRqslVisitor<QUser> visitor = new EasyCustomRqslVisitor<QUser>(QUser.user);
+			Predicate p = rootNode.accept(visitor);
+			entityPage = userRepository.findAll(p, pageable); 
+		} else {
+			entityPage = userRepository.findAll(pageable);		
+		}
+		Page<UserDto> page = new PageImpl<>(userTransfomer.toDtoLst(entityPage.getContent()), pageable, entityPage.getTotalElements());
+		return page;			
 	}
 	
 	public UserDto updateUser(UserDto user, String id) throws EntityNotFoundException {

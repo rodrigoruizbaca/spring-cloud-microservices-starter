@@ -27,7 +27,7 @@ import com.easyrun.commons.exception.EntityNotFoundException;
 
 @RestController()
 @CrossOrigin
-@RequestMapping(value="auth/role", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="role", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RoleController {
 	
 	@Autowired
