@@ -1,0 +1,38 @@
+server:
+  port: 8084
+spring:
+  cloud:
+    bus:
+      enabled: true
+  application:
+    name: gateway
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+          bus-refresh  
+eureka:
+  instance:
+    hostname: localhost
+    metadataMap:
+      instanceId:
+        ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8082/eureka/ 
+    region: defaukt
+    registryFetchIntervalSeconds: 5   
+
+zuul:
+  routes:
+    auth:
+      path: /auth/**
+      sensitive-headers: Cookie,Set-Cookie
