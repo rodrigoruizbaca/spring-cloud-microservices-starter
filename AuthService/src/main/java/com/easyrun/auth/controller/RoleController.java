@@ -3,6 +3,7 @@ package com.easyrun.auth.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.easyrun.auth.service.AuthService;
@@ -49,8 +51,12 @@ public class RoleController {
 	
 	@GetMapping("")	
 	@PreAuthorize("@S.hasAuthorityAsPattern('get-role')")
-	public ResponseEntity<?> getRole() {		
-		return ResponseEntity.ok(authService.getRoles());		
+	public ResponseEntity<?> getRole(Pageable p, @RequestParam(value = "search", required=false) String search) {
+		if (search != null && !search.isEmpty()) {
+			return ResponseEntity.ok(authService.getRoles(p, search));
+		} else {
+			return ResponseEntity.ok(authService.getRoles(p));
+		}
 	}
 	
 	@DeleteMapping("/{id}")	

@@ -10,10 +10,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.querydsl.core.annotations.QueryEntity;
+
 import lombok.Data;
 
 @Data
 @Document
+@QueryEntity
 public abstract class Auditable<ID> implements Persistable<ID> {
 	
 	@CreatedDate

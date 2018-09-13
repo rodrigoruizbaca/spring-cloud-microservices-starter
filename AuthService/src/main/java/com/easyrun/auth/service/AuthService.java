@@ -5,10 +5,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.easyrun.auth.model.Configuration;
+import com.easyrun.auth.model.QRole;
 import com.easyrun.auth.model.Role;
 import com.easyrun.auth.model.User;
 import com.easyrun.auth.repository.ConfigurationRepository;
@@ -21,6 +25,11 @@ import com.easyrun.commons.dto.ConfigurationDto;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.exception.EntityNotFoundException;
+import com.easyrun.commons.rest.filter.EasyCustomRqslVisitor;
+import com.querydsl.core.types.Predicate;
+
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 
 @Service
 public class AuthService {
@@ -54,8 +63,23 @@ public class AuthService {
 		throw new DuplicateKeyException("The key for role" + role.getRoleCd() + " already exists");
 	}
 	
-	public List<RoleDto> getRoles() {		
-		return roleTransfomer.toDtoLst(roleRepository.findAll());				
+	public Page<RoleDto> getRoles(Pageable pageable) {
+		return getRoles(pageable, null);
+	}
+	
+	public Page<RoleDto> getRoles(Pageable pageable, String search) {
+		Page<Role> entityPage = null;
+		if (search != null) {
+			Node rootNode = new RSQLParser().parse(search);
+			EasyCustomRqslVisitor<QRole> visitor = new EasyCustomRqslVisitor<QRole>(QRole.role);
+			Predicate p = rootNode.accept(visitor);
+			entityPage = roleRepository.findAll(p, pageable); 
+		} else {
+			entityPage = roleRepository.findAll(pageable); 
+		}
+		
+		Page<RoleDto> page = new PageImpl<>(roleTransfomer.toDtoLst(entityPage.getContent()), pageable, entityPage.getTotalElements());
+		return page;				
 	}
 	
 	public RoleDto updateRole(RoleDto role, String id) throws EntityNotFoundException {
