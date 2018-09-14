@@ -1,0 +1,37 @@
+server:
+  port: 9080
+spring:
+  cloud:
+    bus:
+      enabled: true  
+  data:
+    mongo:
+      uri: mongodb+srv://starter:starter@cluster0-lpgfm.mongodb.net/test?retryWrites=true  
+      databaseName: auth
+  application:
+    name: auth
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    username: guest
+    password: guest
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+          bus-refresh  
+eureka:
+  instance:
+    hostname: auth
+    metadataMap:
+      instanceId:
+        ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8092/eureka/    
+services:
+  auth:
+    name: auth

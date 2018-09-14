@@ -1,0 +1,32 @@
+server:
+  port: 8092
+spring:
+  cloud:
+    bus:
+      enabled: true  
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    username: guest
+    password: guest
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+          bus-refresh  
+eureka:
+  instance:
+    hostname: discovery
+    metadataMap:
+      instanceId:
+        ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8092/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+rodrigo:
+  test: Rodrigo Ruiz

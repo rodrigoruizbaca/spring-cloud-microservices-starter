@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    config:
+      name: discovery
+      uri: http://config:8091
+  application:
+    name: discovery

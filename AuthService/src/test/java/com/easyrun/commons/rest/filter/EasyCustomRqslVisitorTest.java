@@ -15,7 +15,7 @@ public class EasyCustomRqslVisitorTest {
 		Node rootNode = new RSQLParser().parse("roleCd==john;id!=1;createdDate>=2018-01-01T00:00:00");
 		EasyCustomRqslVisitor<QRole> visitor = new EasyCustomRqslVisitor<QRole>(QRole.role);
 		BooleanBuilder p = (BooleanBuilder) rootNode.accept(visitor);
-		assertEquals("role.roleCd like john && role.id != 1 && (role.createdDate > Mon Jan 01 00:00:00 CST 2018 || role.createdDate = Mon Jan 01 00:00:00 CST 2018)", p.toString());
+		assertEquals("containsIc(role.roleCd,john) && role.id != 1 && (role.createdDate > Mon Jan 01 00:00:00 CST 2018 || role.createdDate = Mon Jan 01 00:00:00 CST 2018)", p.toString());
 	}
 	
 }

@@ -1,0 +1,18 @@
+server:
+  port: 8091
+spring:
+  application:
+    name: config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/rodrigoruizbaca/spring-cloud-microservices-starter.git
+          searchPaths: config-files
+    bus:
+      enabled: true
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    username: guest
+    password: guest
