@@ -5,9 +5,10 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.easyrun.auth.model.User;
+import com.easyrun.commons.Repository.EasyRepository;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String>, QuerydslPredicateExecutor<User> { 
-	public User getByUsername(String username);
+public interface UserRepository extends MongoRepository<User, String>, QuerydslPredicateExecutor<User>, EasyRepository<User, String> { 
+	public User getByUniqueKey(String username);
 
 }

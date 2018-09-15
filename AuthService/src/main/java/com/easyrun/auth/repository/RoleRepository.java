@@ -7,11 +7,12 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.easyrun.auth.model.Role;
+import com.easyrun.commons.Repository.EasyRepository;
 @Repository
-public interface RoleRepository extends MongoRepository<Role, String>, QuerydslPredicateExecutor<Role> {
+public interface RoleRepository extends MongoRepository<Role, String>, QuerydslPredicateExecutor<Role>, EasyRepository<Role, String> {
 	
 	List<Role> getRolesByIdIn(List<String> ids);
 	
-	Role getByRoleCd(String roleCd);
+	Role getByUniqueKey(String roleCd);
 }
 	

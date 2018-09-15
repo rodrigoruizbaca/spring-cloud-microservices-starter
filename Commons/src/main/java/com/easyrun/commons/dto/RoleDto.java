@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class RoleDto {		
+public class RoleDto implements EasyDto<String> {		
     @Null(groups = NewValidator.class)
 	private String id;
 	@NotNull(
@@ -25,6 +25,12 @@ public class RoleDto {
 	        groups = {NewValidator.class, ExistingValidator.class}
 	)
 	private List<String> permissions;
+
+	@Override
+	public String geUniqueKey() {
+		// TODO Auto-generated method stub
+		return roleCd;
+	}
 	
 	
 	

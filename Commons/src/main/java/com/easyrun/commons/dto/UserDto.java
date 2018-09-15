@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class UserDto {
+public class UserDto implements EasyDto<String> {
 	@Null(groups = NewValidator.class)
 	private String id;
 	@NotNull(
@@ -34,4 +34,8 @@ public class UserDto {
 	
 	private String token;
 	private String audience;
+	@Override
+	public String geUniqueKey() {
+		return username;
+	}
 }

@@ -3,6 +3,7 @@ package com.easyrun.auth.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,31 +20,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.easyrun.auth.service.AuthService;
+import com.easyrun.auth.model.QRole;
 import com.easyrun.commons.dto.ExistingValidator;
 import com.easyrun.commons.dto.NewValidator;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.exception.EntityNotFoundException;
+import com.easyrun.commons.service.CrudSupportService;
 
 @RestController()
 @CrossOrigin
 @RequestMapping(value="role", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RoleController {
 	
+	
 	@Autowired
-	private AuthService authService;
+	@Qualifier("roleService")
+	private CrudSupportService<RoleDto, String, QRole> service; 
 	
 	@PostMapping()	
 	@PreAuthorize("@S.hasAuthorityAsPattern('add-role')")
 	public  ResponseEntity<?> addrole(@Validated(NewValidator.class) @RequestBody RoleDto role) {
-		return ResponseEntity.created(URI.create("/role")).body(authService.addRole(role));
+		return ResponseEntity.created(URI.create("/role")).body(service.add(role));
 	}	
 	
 	@PatchMapping("/{id}")	
 	@PreAuthorize("@S.hasAuthorityAsPattern('update-role')")
 	public ResponseEntity<?> updateRole(@Validated(ExistingValidator.class) @RequestBody RoleDto role, @PathVariable String id) {
 		try {
-			return ResponseEntity.ok(authService.updateRole(role, id));
+			return ResponseEntity.ok(service.update(role, id));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -52,10 +56,11 @@ public class RoleController {
 	@GetMapping("")	
 	@PreAuthorize("@S.hasAuthorityAsPattern('get-role')")
 	public ResponseEntity<?> getRole(Pageable p, @RequestParam(value = "search", required=false) String search) {
+		
 		if (search != null && !search.isEmpty()) {
-			return ResponseEntity.ok(authService.getRoles(p, search));
+			return ResponseEntity.ok(service.get(p, QRole.role, search));
 		} else {
-			return ResponseEntity.ok(authService.getRoles(p));
+			return ResponseEntity.ok(service.get(p, QRole.role));
 		}
 	}
 	
@@ -63,7 +68,7 @@ public class RoleController {
 	@PreAuthorize("@S.hasAuthorityAsPattern('delete-role')")
 	public ResponseEntity<?> deleteRole(@PathVariable String id) {
 		try {
-			authService.deleteRole(id);
+			service.delete(id);
 			return ResponseEntity.noContent().build();
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.notFound().build();

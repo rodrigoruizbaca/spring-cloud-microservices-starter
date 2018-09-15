@@ -54,7 +54,7 @@ public class UsernamePasswordAuthentitationProvider implements AuthenticationPro
 		UsernamePasswordAuthentication authentication = (UsernamePasswordAuthentication) auth;
 		UserDto user = (UserDto) authentication.getPrincipal();
 		if (user != null && user.getUsername() != null && user.getPassword() != null) {
-			User u = userRepository.getByUsername(user.getUsername());
+			User u = userRepository.getByUniqueKey(user.getUsername());
 			if (u != null && passwordEncoder.matches(user.getPassword(), u.getPassword())) {
 				try {
 					UserDto resultUser = userTransformer.toDto(u);
