@@ -26,7 +26,7 @@ public class AuthenticationService {
 	
 	public List<ConfigurationDto> getPublicKeys() {
 		ServiceInstance instance = loadBalancer.choose(authServiceName);
-		ConfigurationDto[] response = restTemplate.getForObject(instance.getUri() + "/auth/JWK", ConfigurationDto[].class);
+		ConfigurationDto[] response = restTemplate.getForObject(instance.getUri() + "/JWK", ConfigurationDto[].class);
 		return Arrays.asList(response);
 	}
 }

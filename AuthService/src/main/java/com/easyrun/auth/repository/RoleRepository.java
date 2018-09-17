@@ -3,6 +3,7 @@ package com.easyrun.auth.repository;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,7 @@ public interface RoleRepository extends MongoRepository<Role, String>, QuerydslP
 	
 	List<Role> getRolesByIdIn(List<String> ids);
 	
+	@Query(value = "{roleCd: ?0}")
 	Role getByUniqueKey(String roleCd);
 }
 	
