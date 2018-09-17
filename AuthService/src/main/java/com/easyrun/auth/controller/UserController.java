@@ -3,6 +3,7 @@ package com.easyrun.auth.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,31 +20,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.easyrun.auth.service.AuthService;
+import com.easyrun.auth.model.QUser;
 import com.easyrun.commons.dto.ExistingValidator;
 import com.easyrun.commons.dto.NewValidator;
 import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.exception.EntityNotFoundException;
+import com.easyrun.commons.service.CrudSupportService;
 
 @RestController()
 @CrossOrigin
 @RequestMapping(value="user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 	@Autowired
-	private AuthService authService;
+	@Qualifier("userService")
+	private CrudSupportService<UserDto, String, QUser> service; 
 	
 	
 	@PostMapping()	
 	@PreAuthorize("@S.hasAuthorityAsPattern('add-user')")
 	public  ResponseEntity<?> addUser(@Validated(NewValidator.class) @RequestBody UserDto user) {
-		return ResponseEntity.created(URI.create("/user")).body(authService.addUser(user));
+		return ResponseEntity.created(URI.create("/user")).body(service.add(user));
 	}	
 	
 	@PatchMapping("/{id}")	
 	@PreAuthorize("@S.hasAuthorityAsPattern('update-user')")
 	public ResponseEntity<?> updateUser(@Validated(ExistingValidator.class) @RequestBody UserDto user, @PathVariable String id) {
 		try {
-			return ResponseEntity.ok(authService.updateUser(user, id));
+			return ResponseEntity.ok(service.update(user, id));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -53,9 +56,9 @@ public class UserController {
 	@PreAuthorize("@S.hasAuthorityAsPattern('get-user')")
 	public ResponseEntity<?> getUsers(Pageable p, @RequestParam(value = "search", required=false) String search) {		
 		if (search != null && !search.isEmpty()) {
-			return ResponseEntity.ok(authService.getUsers(p, search));
+			return ResponseEntity.ok(service.get(p, QUser.user, search));
 		} else {
-			return ResponseEntity.ok(authService.getUsers(p));
+			return ResponseEntity.ok(service.get(p, QUser.user));
 		}		
 	}
 	
@@ -63,7 +66,7 @@ public class UserController {
 	@PreAuthorize("@S.hasAuthorityAsPattern('delete-user')")
 	public ResponseEntity<?> deleteUser(@PathVariable String id) {
 		try {
-			authService.deleteUser(id);
+			service.delete(id);
 			return ResponseEntity.noContent().build();
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.notFound().build();

@@ -1,6 +1,8 @@
 package com.easyrun.auth.transformer;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.easyrun.auth.model.User;
@@ -8,6 +10,11 @@ import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.transformer.Transformer;
 @Component
 public class UserTransformer implements Transformer<UserDto, User> {
+	
+	@Autowired
+	private PasswordEncoder encoder;
+	
+	
 	@Override
 	public UserDto toDto(User d) {
 		UserDto dto = new UserDto();
@@ -18,7 +25,8 @@ public class UserTransformer implements Transformer<UserDto, User> {
 
 	@Override
 	public User toDomain(UserDto d) {
-		User domain = new User();
+		User domain = new User();		
+		domain.setPassword(encoder.encode(d.getPassword()));
 		domain.setId(d.getId());
 		BeanUtils.copyProperties(d, domain);
 		return domain;
