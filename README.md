@@ -1,26 +1,7 @@
 ## Spring Cloud Microservices Starter
 Starter project for spring cloud microservices based architecture. It can be used to start a microservices based project using the netflix cloud arquitecture over spring cloud.
+For more information about the archirecture please see the wiki page: https://github.com/rodrigoruizbaca/spring-cloud-microservices-starter/wiki/Architecture
 
-## Introduction
-Spring Cloud Netflix provides Netflix OSS integrations for Spring Boot apps through autoconfiguration and binding to the Spring Environment and other Spring programming model idioms. With a few simple annotations you can quickly enable and configure the common patterns inside your application and build large distributed systems with battle-tested Netflix components. The patterns provided include Service Discovery (Eureka), Circuit Breaker (Hystrix, Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).
-
-## Spring cloud
-Spring Cloud provides tools for developers to quickly build some of the common patterns in distributed systems (e.g. configuration management, service discovery, circuit breakers, intelligent routing, micro-proxy, control bus, one-time tokens, global locks, leadership election, distributed sessions, cluster state). Coordination of distributed systems leads to boiler plate patterns, and using Spring Cloud developers can quickly stand up services and applications that implement those patterns. They will work well in any distributed environment including the developer’s own laptop, bare metal data centres, and managed platforms such as Cloud Foundry.
-
-### Summary
-#### The starter is composed by four micro-services:
-* **Configuration Service:** Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. **For our purposes the configuration service connects to a git repository to read the configuration files of each microservice connected to the cloud.**
-  * Spring cloud bus: Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. In this project the bus is used to propagate configuration changes over the microservices, for example if a change is made in a certain microservice (change database port, change database username, etc), a restarting may be needed, but using spring cloud bus this change is being made it automatically without any restart.
-* **Discovery Service:** Service Discovery is one of the key tenets of a microservice based architecture. Eureka is the Netflix Service Discovery Server and Client. The server can be configured and deployed to be highly available, with each server replicating state about the registered services to the others. When a client registers with Eureka, it provides meta-data about itself such as host and port, health indicator URL, home page etc. Eureka receives heartbeat messages from each instance belonging to a service. If the heartbeat fails over a configurable timetable, the instance is normally removed from the registry.
-* **Gateway Service:** Routing in an integral part of a microservice architecture. For example, / may be mapped to your web application, /api/users is mapped to the user service and /api/shop is mapped to the shop service. Zuul is a JVM based router and server side load balancer by Netflix.
-Spring Cloud has created an embedded Zuul proxy to ease the development of a very common use case where a UI application wants to proxy calls to one or more back end services. This feature is useful for a user interface to proxy to the backend services it requires, avoiding the need to manage CORS and authentication concerns independently for all the backends.
-* **Authentication Service:** Is a microservice in charge to provide JWT tokens, perform logins and validate tokens, it also exposes a set of endpoints to add, edit, update and delete roles and users.
-* **Communication between services:** For the communication between services a client load balancer named ribbon is used. 
-Ribbon is a client side IPC library that is battle-tested in cloud. It provides the following features:
-  * Load balancing
-  * Fault tolerance
-  * Multiple protocol (HTTP, TCP, UDP) support in an asynchronous and reactive model
-  * Caching and batching
 
 ### Configuration
 If the default configuration needs to be changed, it needs be do it as follows:
