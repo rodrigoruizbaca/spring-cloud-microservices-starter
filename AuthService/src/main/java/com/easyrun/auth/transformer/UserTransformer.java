@@ -25,10 +25,10 @@ public class UserTransformer implements Transformer<UserDto, User> {
 
 	@Override
 	public User toDomain(UserDto d) {
-		User domain = new User();		
+		User domain = new User();				
+		BeanUtils.copyProperties(d, domain, "password");
 		domain.setPassword(encoder.encode(d.getPassword()));
 		domain.setId(d.getId());
-		BeanUtils.copyProperties(d, domain);
 		return domain;
 	}
 }
