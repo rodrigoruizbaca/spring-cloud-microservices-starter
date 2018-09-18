@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class RoleDto implements EasyDto<String> {		
+public class RoleDto implements EasyDto<String, String> {		
     @Null(groups = NewValidator.class)
 	private String id;
 	@NotNull(

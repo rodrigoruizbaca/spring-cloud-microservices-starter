@@ -29,4 +29,9 @@ public class RoleService extends CrudSupportServiceImpl <
 		return roleTransfomer;
 	}
 
+	@Override
+	protected Role beforeUpdate(Role role, RoleDto dto) {
+		role.setPermissions(dto.getPermissions());
+		return role;
+	}
 }

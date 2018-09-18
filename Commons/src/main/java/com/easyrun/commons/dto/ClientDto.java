@@ -12,30 +12,35 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class UserDto implements EasyDto<String, String> {
+public class ClientDto implements EasyDto<String, String> {
 	@Null(groups = NewValidator.class)
 	private String id;
-	@NotNull(
-	        message = "Username is required",
-	        groups = {NewValidator.class, ExistingValidator.class}
-	)
-	private String username;
-	@NotNull(
-	        message = "Password is required",
-	        groups = {NewValidator.class, ExistingValidator.class}
-	)	
-	private String password;
 	
 	@NotNull(
-	        message = "Roles are required",
+	        message = "Client name is required",
+	        groups = {NewValidator.class, ExistingValidator.class}
+	)
+	private String name;
+	
+	
+	private String clientId;		
+	private String secret;
+	
+	@NotNull(
+	        message = "Client role list is required",
 	        groups = {NewValidator.class, ExistingValidator.class}
 	)
 	private List<String> roles;
 	
-	private String token;
-	private String audience;
+	@NotNull(
+	        message = "Client type is required",
+	        groups = {NewValidator.class, ExistingValidator.class}
+	)
+	private String type;
+	
 	@Override
 	public String geUniqueKey() {
-		return username;
+		return clientId;
 	}
+
 }
