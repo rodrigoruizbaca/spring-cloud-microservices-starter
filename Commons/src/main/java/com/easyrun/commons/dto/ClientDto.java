@@ -42,5 +42,7 @@ public class ClientDto implements EasyDto<String, String> {
 	public String geUniqueKey() {
 		return clientId;
 	}
+	
+	private String token;
 
 }

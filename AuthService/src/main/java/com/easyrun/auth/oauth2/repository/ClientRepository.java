@@ -11,4 +11,6 @@ import com.easyrun.commons.Repository.EasyRepository;
 public interface ClientRepository extends MongoRepository<Client, String>, QuerydslPredicateExecutor<Client>, EasyRepository<Client, String> {
 	@Query(value = "{clientId: ?0}")
 	Client getByUniqueKey(String clientId);
+	
+	Client getByClientIdAndSecret(String clientId, String secret);
 }
