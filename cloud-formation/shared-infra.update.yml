@@ -77,7 +77,7 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       Code:
         S3Bucket: !ImportValue lambdainf-lambdabucket
-        S3Key: lambda.zip
+        S3Key: index.zip
       Handler: index.handler
       Runtime: "nodejs8.10"
       Timeout: "300"
