@@ -1,10 +1,27 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  bucketPrefix: 
+    Type: String
+    Description: Application Version to Deploy
+    Default: "spring-cloud-starter-"
 Resources:    
   S3AppBucket:
-    DeletionPolicy: Delete
+    DeletionPolicy: Delete    
     Type: "AWS::S3::Bucket"
-    DependsOn: Lambda    
-    Properties:     
+    DependsOn: LambdaInvokePermission    
+    Properties:
+      BucketName: !Sub  "${bucketPrefix}-deployments-s3"
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - 
+            Event: s3:ObjectCreated:*
+            Filter: 
+              S3Key:
+                Rules:
+                  -
+                    Name: suffix
+                    Value: zip
+            Function: !GetAtt Lambda.Arn
       CorsConfiguration:
         CorsRules:
           -  AllowedHeaders: ['*']
@@ -45,34 +62,17 @@ Resources:
             Action:
               - sts:AssumeRole
       Path: "/"    
-  IAMPolicy:
-    DependsOn: LambdaRole
-    Type: AWS::IAM::Policy
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
     Properties:
-      PolicyName: lambdapolicy
-      Roles:
-        - !Ref LambdaRole
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          -
-            Effect: Allow
-            Action:
-              - "logs:*"
-            Resource:
-              - "arn:aws:logs:*:*:*"
-          -
-            Effect: Allow
-            Action:
-              - "s3:*"
-            Resource:
-              - "*"  
+      FunctionName: !GetAtt Lambda.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: "s3.amazonaws.com"
+      SourceAccount: !Ref "AWS::AccountId"
+      SourceArn: !Join ["",["arn:aws:s3:::", !Sub "${bucketPrefix}-deployments-s3"]]             
     
   Lambda:
-    Type: AWS::Lambda::Function
-    DependsOn:
-      - LambdaRole
-      - IAMPolicy
+    Type: AWS::Lambda::Function    
     Properties:      
       Role: !GetAtt LambdaRole.Arn
       Code:

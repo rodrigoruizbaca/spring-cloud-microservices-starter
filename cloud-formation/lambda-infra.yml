@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:  
   S3LambdaBucket:
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Type: "AWS::S3::Bucket"
     Properties:
       AccessControl: PublicRead
@@ -28,4 +28,4 @@ Outputs:
     Description: App Bucket Name
     Value: !Ref S3LambdaBucket
     Export:
-      Name: lambdainf-lambdabucket    
+      Name: lambdainf-lambdabucket
