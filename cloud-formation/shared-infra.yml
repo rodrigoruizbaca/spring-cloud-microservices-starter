@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:    
+  S3AppBucket:
+    DeletionPolicy: Retain
+    Type: "AWS::S3::Bucket"
+    Properties:
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - 
+            Event: s3:ObjectCreated:*
+            Filter: 
+              S3Key:
+                Rules:
+                  -
+                    Name: suffix
+                    Value: jar
+            Function: !Ref Lambda.Arn
+      CorsConfiguration:
+        CorsRules:
+          -  AllowedHeaders: ['*']
+             AllowedMethods: ['GET']
+             AllowedOrigins: ['*']
+             Id: rule1
+             MaxAge: '3000'
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        ErrorDocument: index.html
+        IndexDocument: index.html
+  BucketPolicyApp:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref S3AppBucket
+      PolicyDocument:
+        Statement:
+          -
+            Sid: "ABC123"
+            Action:
+              - "s3:GetObject"
+            Effect: Allow
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref S3AppBucket, "/*"]]
+            Principal:
+              AWS:
+                - "*"  
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"    
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - IAMRole
+    Properties:
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        S3Bucket: !ImportValue lambdainf-lambdabucket
+        S3Key: deployer.zip
+      Handler: index.handler
+      Runtime: "nodejs8.10"
+      Timeout: "300"
+      MemorySize: "128"            
+Outputs:    
+  appbucketurl:
+    Description: Shared Infrastructure App Bucket
+    Value: !GetAtt S3AppBucket.WebsiteURL
+    Export: # added to export
+      Name: sharedinf-appbucketurl
+  appbucket:
+    Description: App Bucket Name
+    Value: !Ref S3AppBucket
+    Export:
+      Name: sharedinf-appbucketname

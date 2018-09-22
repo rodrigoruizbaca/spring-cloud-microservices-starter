@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:  
+  S3LambdaBucket:
+    DeletionPolicy: Retain
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        ErrorDocument: index.html
+        IndexDocument: index.html
+  BucketPolicyLambda:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref S3LambdaBucket
+      PolicyDocument:
+        Statement:
+          -
+            Sid: "ABC123"
+            Action:
+              - "s3:GetObject"
+            Effect: Allow
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref S3LambdaBucket, "/*"]]
+            Principal:
+              AWS:
+                - "*"    
+Outputs:    
+  lambdabucket:
+    Description: App Bucket Name
+    Value: !Ref S3LambdaBucket
+    Export:
+      Name: lambdainf-lambdabucket    
