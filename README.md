@@ -69,6 +69,21 @@ Note: In order to call each endpoint you can do it by the gateway (recommended) 
 * [GET /user](#get-user)
 * [GET /role](#get-role)
 
+### Current oauth2 endpoints
+Some oauth2 endpoints are supported
+
+### POST
+* [POST /oauth2/client](#post-oauth2client)
+
+#### PATCH
+* [PATCH /oauth2/client](#patch-oauth2clientid)
+
+#### DELETE
+* [DELETE /oauth2/client](#delete-oauth2client)
+
+#### GET
+* [GET /oauth2/client](#get-oauth2client)
+
 ---
 <a name="add-user"></a>
 
@@ -447,3 +462,71 @@ POST http://localhost:9090/login - If calling directly
     "type": "bearer"
 }
 ```
+---
+
+<a name="post-oauth2-client"></a>
+
+#### POST /oauth2/client
+[Back to Menu](#current-oauth2-endpoints)
+
+Adds a new oauth2 client
+
+***Parameters***
+
+Param        | Type   | In           | Required?  | Description
+---          | ---    | ---          | ---        | ---
+x-auth       | String | Header       | Yes        | The beaear token (bearer token)
+name         | String | Body         | Yes        | The name of the client
+roles        | Array  | Body         | Yes        | An array with all the roles assigned to this client.
+type         | String | Body        | Yes        | The type of the client
+
+
+ ***Sample Request***
+```
+POST http://localhost:8094/auth/oauth2/client- If calling through gateway
+POST http://localhost:9090/oauth2/client - If calling directly
+
+{
+	"name": "my client",
+	"roles": ["5b9fc54d42a81f0d79694ac2"],
+	"type": "server"
+}
+```
+***Sample Response***
+```
+{
+    
+}
+```
+
+---
+
+#### PATCH /oauth2/client/:id
+[Back to Menu](#current-oauth2-endpoints)
+
+Updates an existing client.
+
+***Parameters***
+
+Param        | Type   | In           | Required?  | Description
+---          | ---    | ---          | ---        | ---
+x-auth       | String | Header       | Yes        | The beaear token (bearer token)
+name         | String | Body         | Yes        | The name of the client
+roles        | Array  | Body         | Yes        | An array with all the roles assigned to this client.
+type         | String | Body         | Yes         | The type of the client
+id           | String | Path         | Yes        | The Id role
+
+***Note that the auth prefix is added to the endpoint if its called through the gateway**
+
+***Sample Request***
+```
+PATCH https://localhost:8084/auth/oauth2/client/5b97ee9ddfb3890c6b16256a - If calling through gateway
+PATCH https://localhost:9090/oauth2/client/5b97ee9ddfb3890c6b16256a - If calling directly
+
+{
+	"name": "my client",
+	"roles": ["5b9fc54d42a81f0d79694ac2"],
+	"type": "server"
+}
+```
+---

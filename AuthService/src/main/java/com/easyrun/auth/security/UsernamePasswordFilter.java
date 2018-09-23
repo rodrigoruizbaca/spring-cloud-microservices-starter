@@ -18,7 +18,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.easyrun.commons.dto.UserDto;
-import com.easyrun.commons.security.EasyGenericFilter;
+import com.easyrun.commons.rest.filter.EasyGenericFilter;
 @WebFilter(urlPatterns = "/login")
 public class UsernamePasswordFilter extends EasyGenericFilter {
 
