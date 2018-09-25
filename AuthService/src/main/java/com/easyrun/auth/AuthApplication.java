@@ -7,6 +7,7 @@ import org.jose4j.jwk.RsaJwkGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ import com.mongodb.MongoClientURI;
 @EnableEurekaClient
 @EnableFeignClients
 @EnableMongoAuditing
+@EnableCircuitBreaker
 @EnableMongoRepositories(basePackages = {"com.easyrun.auth.repository", "com.easyrun.commons.repository", "com.easyrun.auth.oauth2.repository"})
 @ComponentScan({"com.easyrun.commons", "com.easyrun.auth"})
 public class AuthApplication extends AbstractMongoConfiguration {

@@ -34,4 +34,5 @@ public class RoleService extends CrudSupportServiceImpl <
 		role.setPermissions(dto.getPermissions());
 		return role;
 	}
+	
 }
