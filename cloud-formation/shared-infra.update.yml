@@ -69,19 +69,20 @@ Resources:
       Action: "lambda:InvokeFunction"
       Principal: "s3.amazonaws.com"
       SourceAccount: !Ref "AWS::AccountId"
-      SourceArn: !Join ["",["arn:aws:s3:::", !Sub "${bucketPrefix}-deployments-s3"]]             
-    
+      SourceArn: !Join ["",["arn:aws:s3:::", !Sub "${bucketPrefix}-deployments-s3"]]                   
   Lambda:
     Type: AWS::Lambda::Function    
     Properties:      
       Role: !GetAtt LambdaRole.Arn
+      Environment:
+        Variables: 
+          FUNCTION_NAME: "s3Function"
       Code:
         S3Bucket: !ImportValue lambdainf-lambdabucket
-        S3Key: index.zip
-      Handler: index.handler
-      Runtime: "nodejs8.10"
-      Timeout: "300"
-      MemorySize: "128"            
+        S3Key: Lambda-0.0.1-SNAPSHOT-aws.jar
+      Handler: com.easyrun.lambda.handlers.TestHandler
+      Runtime: "java8"   
+      Timeout: 100      
 Outputs:    
   appbucketurl:
     Description: Shared Infrastructure App Bucket
