@@ -21,7 +21,7 @@ import cz.jirutka.rsql.parser.ast.Node;
 
 public abstract class CrudSupportServiceImpl<	
 	ENTITY, 
-	DTO extends EasyDto<KEY>, 
+	DTO extends EasyDto<KEY, ID>, 
 	Q,
 	ID,
 	KEY,
@@ -34,6 +34,7 @@ public abstract class CrudSupportServiceImpl<
 		ENTITY entity = getRepository().getByUniqueKey(dto.geUniqueKey());
 		if (entity == null) {
 			entity = getTransformer().toDomain(dto);
+			entity = beforeAdd(entity);
 			return getTransformer().toDto(getRepository().insert(entity));
 		}
 		throw new DuplicateKeyException("The key for entity" + dto.geUniqueKey() + " already exists");
@@ -59,9 +60,13 @@ public abstract class CrudSupportServiceImpl<
 	}
 	
 	public DTO update(DTO dto, ID id) throws EntityNotFoundException {
-		Optional<ENTITY> optional = getRepository().findById(id);		
+		Optional<ENTITY> optional = getRepository().findById(id);				
 		if (optional.isPresent()) {
-			ENTITY entity = optional.get();			
+			if (!id.equals(dto.getId())) {
+				throw new EntityNotFoundException("The entity with id " + id + " does not match with the ID on the DTO " + dto.getId());
+			}
+			ENTITY entity = optional.get();
+			entity = beforeUpdate(entity, dto);
 			return getTransformer().toDto(getRepository().save(entity));
 		} else {
 			throw new EntityNotFoundException("The entity with id " + id + " does not exists");
@@ -79,5 +84,11 @@ public abstract class CrudSupportServiceImpl<
 	
 	public abstract REPOSITORY getRepository();
 	public abstract TRANSFORMER getTransformer();
+	
+	protected ENTITY beforeAdd(ENTITY d) {
+		return d;
+	}
+	
+	protected abstract ENTITY beforeUpdate(ENTITY d, DTO dtoToPersist);
 	
 }

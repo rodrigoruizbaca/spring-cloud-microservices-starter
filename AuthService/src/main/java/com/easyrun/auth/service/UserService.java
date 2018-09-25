@@ -1,6 +1,7 @@
 package com.easyrun.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.easyrun.auth.model.QUser;
@@ -18,6 +19,9 @@ User, UserDto, QUser, String, String, UserTransformer, UserRepository> {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserRepository getRepository() {
@@ -27,5 +31,18 @@ User, UserDto, QUser, String, String, UserTransformer, UserRepository> {
 	@Override
 	public UserTransformer getTransformer() {
 		return userTransfomer;
+	}
+	
+	@Override
+	protected User beforeAdd(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return user;
+	}
+	
+	@Override
+	protected User beforeUpdate(User user, UserDto dto) {
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		user.setRoles(dto.getRoles());
+		return user;
 	}
 }

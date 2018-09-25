@@ -29,7 +29,7 @@ import com.mongodb.MongoClientURI;
 @EnableEurekaClient
 @EnableFeignClients
 @EnableMongoAuditing
-@EnableMongoRepositories(basePackages = {"com.easyrun.auth.repository", "com.easyrun.commons.repository"})
+@EnableMongoRepositories(basePackages = {"com.easyrun.auth.repository", "com.easyrun.commons.repository", "com.easyrun.auth.oauth2.repository"})
 @ComponentScan({"com.easyrun.commons", "com.easyrun.auth"})
 public class AuthApplication extends AbstractMongoConfiguration {
 

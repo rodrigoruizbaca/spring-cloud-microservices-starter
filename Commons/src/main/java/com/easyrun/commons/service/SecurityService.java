@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component("S")
-public class SecurityService /*implements PermissionEvaluator*/ {
+public class SecurityService {
 	
 	
 	
@@ -32,22 +32,5 @@ public class SecurityService /*implements PermissionEvaluator*/ {
 			}				
 		});		
 	}
-
-	/*@Override
-	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-		if ((authentication == null) || (targetDomainObject == null) || !(permission instanceof String)){
-            return false;
-        }
-		//String targetType = targetDomainObject.getClass().getSimpleName().toUpperCase();
-		return hasAuthorityAsPattern(authentication, permission.toString());		
-	}
-
-	@Override
-	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
-			Object permission) {
-		if ((authentication == null) || (targetType == null) || !(permission instanceof String)){
-            return false;
-        }
-		return hasAuthorityAsPattern(authentication, permission.toString());
-	}*/
+	
 }

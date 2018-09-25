@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import com.easyrun.auth.oauth2.security.ClientGrantAuthentitationProvider;
+import com.easyrun.auth.oauth2.security.ClientGrantFilter;
 import com.easyrun.auth.security.UsernamePasswordAuthentitationProvider;
 import com.easyrun.auth.security.UsernamePasswordFilter;
 import com.easyrun.commons.security.AuthenticationTokenFilter;
@@ -28,10 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthenticationTokenProvider authenticationTokenProvider;
+	
+	@Autowired
+	private ClientGrantAuthentitationProvider clientGrantAuthentitationProvider;
 
-	public String[] getIgnoredUrls() {
-		return new String[] { "/encode/**", "/JWK/**" };
-	}
+	
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -41,7 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(usernamePasswordAuthentitationProvider);
+		auth.authenticationProvider(clientGrantAuthentitationProvider);
 		auth.authenticationProvider(authenticationTokenProvider);
+		
 	}
 
 	@Override
@@ -55,11 +60,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public UsernamePasswordFilter getUsernamePasswordFilter() throws Exception {
-		return new UsernamePasswordFilter(this.getIgnoredUrls(), authenticationManager());
+		return new UsernamePasswordFilter(authenticationManager());
+	}
+	
+	@Bean
+	public ClientGrantFilter getClientGrantFilter() throws Exception {
+		return new ClientGrantFilter(authenticationManager());
 	}
 	
 	@Bean
 	public AuthenticationTokenFilter getAuthenticationTokenFilter() throws Exception {
-		return new AuthenticationTokenFilter(authenticationManager());
+		return new AuthenticationTokenFilter(authenticationManager(), new String[] {"/public/**", "/JWK/**", "/mappings/**"}, new String[] {"/user/**", "/role/**", "/oauth2/client/**"});
 	}
+
+	
 }

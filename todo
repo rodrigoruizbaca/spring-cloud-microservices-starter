@@ -1,0 +1,4 @@
+- Add new oauth2 endpoints on readme * 
+- Add instructions about config for github on readme *
+- Add hystrix on a client.
+- Finish cloud formation support.

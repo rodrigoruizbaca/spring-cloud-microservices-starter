@@ -7,8 +7,9 @@ For more information about the archirecture please see the wiki page: https://gi
 If the default configuration needs to be changed, it needs be do it as follows:
 * For configuration service all its properties needs to be specified on the file named main/resources/application.yml, for obvious reasons this service is the only one its properties are not in the config central repository.
 * Since the configuration service endpoint is the only one that needs to be specified before each service can get its properties from the config service, this property needs to be specified on the boostrap.yml file of each service (Eg: AuthService/main/resources/boostrap.yml). Note there is always a *-docker.yml file to change the properties when the project is ran under docker.
-* To configure all the properties of each service see the folder config-files on this repository. **Please note you need to do a push in order to be taken by the configuration service.**
-  * Every time a change is made on a config file (auth.yml for example) a push needs to be made to be propagated and refreshed.
+* To configure all the properties of each service see the folder config-files on this repository. 
+* Please note you need to add a webhook in github to let the config server knows when a push is made.
+  * See this wiki to know how: https://github.com/rodrigoruizbaca/spring-cloud-microservices-starter/wiki/How-to-configure-GitHub
 * The auth service uses mongo as database. In order to configure it, you need to change the mongo uri in the auth.yml file contained in config-files folder.  
 
 ### How to build
@@ -68,6 +69,22 @@ Note: In order to call each endpoint you can do it by the gateway (recommended) 
 #### GET
 * [GET /user](#get-user)
 * [GET /role](#get-role)
+
+### Current oauth2 endpoints
+Some oauth2 endpoints are supported
+
+### POST
+* [POST /oauth2/client](#post-oauth2client)
+* [POST /oauth2/token](#post-oauth2token)
+
+#### PATCH
+* [PATCH /oauth2/client](#patch-oauth2clientid)
+
+#### DELETE
+* [DELETE /oauth2/client](#delete-oauth2clientid)
+
+#### GET
+* [GET /oauth2/client](#get-oauth2client)
 
 ---
 <a name="add-user"></a>
@@ -348,7 +365,6 @@ GET http://localhost:9090/user - If calling directly
 ```
 ---
 
-<a name="get-role"></a>
 
 #### GET /role
 [Back to Menu](#current-endpoints)
@@ -420,7 +436,6 @@ GET http://localhost:9090/role - If calling directly
 ```
 ---
 
-<a name="login"></a>
 
 #### POST /login
 [Back to Menu](#current-endpoints)
@@ -447,3 +462,227 @@ POST http://localhost:9090/login - If calling directly
     "type": "bearer"
 }
 ```
+---
+
+#### POST /oauth2/client
+[Back to Menu](#current-oauth2-endpoints)
+
+Adds a new oauth2 client
+
+***Parameters***
+
+Param        | Type   | In           | Required?  | Description
+---          | ---    | ---          | ---        | ---
+x-auth       | String | Header       | Yes        | The beaear token (bearer token)
+name         | String | Body         | Yes        | The name of the client
+roles        | Array  | Body         | Yes        | An array with all the roles assigned to this client.
+type         | String | Body        | Yes        | The type of the client
+
+
+ ***Sample Request***
+```
+POST http://localhost:8094/auth/oauth2/client- If calling through gateway
+POST http://localhost:9090/oauth2/client - If calling directly
+
+{
+	"name": "my client",
+	"roles": ["5b9fc54d42a81f0d79694ac2"],
+	"type": "server"
+}
+```
+***Sample Response***
+```
+{
+    "id": "5baa717b5b1b8011bcab475f",
+    "name": "my client",
+    "clientId": "b5725fb497a3c0a7ec256f84b2881b85",
+    "secret": "40de7bed89bdc0dcf8afabc2f695d354bb8b7534992d0a4fc925e4d42f3f3cb2",
+    "roles": [
+        "5b9fc54d42a81f0d79694ac2"
+    ],
+    "type": "server",
+    "token": null
+}
+```
+
+---
+
+#### PATCH /oauth2/client/:id
+[Back to Menu](#current-oauth2-endpoints)
+
+Updates an existing client.
+
+***Parameters***
+
+Param        | Type   | In           | Required?  | Description
+---          | ---    | ---          | ---        | ---
+x-auth       | String | Header       | Yes        | The beaear token (bearer token)
+name         | String | Body         | Yes        | The name of the client
+roles        | Array  | Body         | Yes        | An array with all the roles assigned to this client.
+type         | String | Body         | Yes        | The type of the client
+id           | String | Path         | Yes        | The Id client
+
+***Note that the auth prefix is added to the endpoint if its called through the gateway**
+
+***Sample Request***
+```
+PATCH https://localhost:8084/auth/oauth2/client/5b97ee9ddfb3890c6b16256a - If calling through gateway
+PATCH https://localhost:9090/oauth2/client/5b97ee9ddfb3890c6b16256a - If calling directly
+
+{
+	"name": "my client",
+	"roles": ["5b9fc54d42a81f0d79694ac2"],
+	"type": "server",
+	"id": "5ba13a880908220be9a43d8b"
+}
+```
+
+***Sample Response***
+```
+{
+    "id": "5ba13a880908220be9a43d8b",
+    "name": "my client",
+    "clientId": "b3ace8d7c5d3087427d013546017d8d2",
+    "secret": "a6877824bf0c1cae6f573be09a1a47a625ad0d4ed4417c133a3e3026a8371f83",
+    "roles": [
+        "5b9fc54d42a81f0d79694ac2"
+    ],
+    "type": "server",
+    "token": null
+}
+```
+---
+
+#### DELETE /oauth2/client/:id
+[Back to Menu](#current-oauth2-endpoints)
+
+Deletes an client
+
+***Parameters***
+
+Param        | Type   | In           | Required?  | Description
+---          | ---    | ---          | ---        | ---
+x-auth       | String | Header       | Yes        | The beaear token (bearer token)
+id           | String | Path         | Yes        | The Id user
+
+***Note that the auth prefix is added to the endpoint if its called through the gateway**
+
+***Sample Request***
+```
+DELETE http://ocalhost:8084/auth/oauth2/client/5ba13a880908220be9a43d8b - If calling through gateway
+DELETE http://localhost:9090/oauth2/client/5ba13a880908220be9a43d8b - If calling directly
+```
+---
+
+#### GET /oauth2/client
+[Back to Menu](#current-oauth2-endpoints)
+
+Gets all the clients in a paginated way
+
+***Parameters***
+
+Param        | Type   | In           | Required?  | Description
+---          | ---    | ---          | ---        | ---
+x-auth       | String | Header       | Yes        | The beaear token (bearer token)
+size         | String | Query        | No         | The amount of items per page
+page         | String | Query        | No         | The page number to see (zero-index)
+sort         | String | Query        | No         | The sort object: sort=username,desc
+search       | String | Query        | No         | The search query
+
+**Comparison operators are in FIQL notation and some of them has an alternative syntax as well: See https://github.com/jirutka/rsql-parser**
+
+* Equal to : ==
+* Not equal to : !=
+* Less than : =lt= or <
+* Less than or equal to : =le= or <=
+* Greater than operator : =gt= or >
+* Greater than or equal to : =ge= or >=
+
+***Note that the auth prefix is added to the endpoint if its called through the gateway**
+
+***Sample Request***
+```
+GET http://localhost:8094/auth/oauth2/client?sort=name,desc&page=0&size=1&search=name==a - If calling through gateway
+GET http://localhost:9090/oauth2/client - If calling directly
+```
+
+***Sample Response***
+```
+{
+    "content": [
+        {
+            "id": "5baa71635b1b8011bcab475b",
+            "name": "my client",
+            "clientId": "6a647348f29640e696fc357fb909e77b",
+            "secret": "3d1f08f1871c184c3618eaf98eaf427f20cfb1cc3e55fe25c644edad4103ddf8",
+            "roles": [
+                "5b9fc54d42a81f0d79694ac2"
+            ],
+            "type": "server",
+            "token": null
+        },
+        {
+            "id": "5baa716e5b1b8011bcab475c",
+            "name": "my client",
+            "clientId": "74af2bbc50829be2f13e18351848b135",
+            "secret": "b0d14addb19e10cfadd3c9db33d6b8b1b0d1d16349e7090040e020635a39db48",
+            "roles": [
+                "5b9fc54d42a81f0d79694ac2"
+            ],
+            "type": "server",
+            "token": null
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "unsorted": false,
+            "sorted": true
+        },
+        "offset": 0,
+        "pageSize": 2,
+        "pageNumber": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "last": false,
+    "totalPages": 3,
+    "totalElements": 5,
+    "size": 2,
+    "number": 0,
+    "first": true,
+    "numberOfElements": 2,
+    "sort": {
+        "unsorted": false,
+        "sorted": true
+    }
+}
+```
+---
+
+#### POST /oauth2/token
+[Back to Menu](#current-oauth2-endpoints)
+
+Performs a login by a client
+
+***Parameters***
+
+Param             | Type   | In           | Required?  | Description
+---               | ---    | ---          | ---        | ---
+clent_id          | String | form data    | Yes        | The client id
+client_secret     | String | form data    | Yes        | The client secret
+grant_type        | String | Query        | Yes        | The grant type
+
+***Sample Request***
+```
+POST http://localhost:8084/auth/oauth2/token?grant_type=client_credentials If calling through gateway
+POST http://localhost:9090/oauth2/token?grant_type=client_credentials - If calling directly
+```
+
+***Sample Response***
+```
+{
+    "accessToken": "eyJraWQiOiIzNTY1YmFhMC00ZTI3LTQ0NWEtYjRjNS1kOTc4NTg5NTE5MmIiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJlYXN5cnVuLmF1dGgiLCJhdWQiOiJlYXN5cnVuLnVzZXIiLCJleHAiOjE1Mzc4OTc2MTQsImp0aSI6ImVuZ0d2dFV2b1ZBUWxUOWw0bWtCcHciLCJpYXQiOjE1Mzc4OTcwMTQsIm5iZiI6MTUzNzg5Njg5NCwic3ViIjoiYjNhY2U4ZDdjNWQzMDg3NDI3ZDAxMzU0NjAxN2Q4ZDIiLCJpZCI6IjViYTEzYTg4MDkwODIyMGJlOWE0M2Q4YiIsInNjb3BlIjpbImdldC0qIl19.d-O_N9wXau24pe6_1DSnL2ByZTHKn68Tb66Bw3lSwiMkIWAy6AeIFM9ltO9XGM8BRR8HiayJVodU-wz1kLEqzuVug6YI3Fsyz8hy9QHfcq__oEDNjEncQJhyG_ARP5CVfhagzMp5rFuwiDTYmxREsRr4BVOh92r-Jhm4IFKkH-VJTIdN3xcLpfZIPLLc4YENjXxFNRqa41zS3OoFTlcgxFglKgP4JI8MA15Rtm2XSrvNYBZ5xbWiS2Y60dMZ8pN3hZtBzPE4y2afGnrgVAL5jZjyalt5mpBrR1eMIVVwUKxZplDQIB9fd_PRJJbxqS3Goo1Mo0aGnlG8ASPEqE5oiQ",
+    "type": "bearer"
+}
+```
+---

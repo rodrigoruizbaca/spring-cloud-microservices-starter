@@ -18,13 +18,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.easyrun.commons.dto.UserDto;
 import com.easyrun.commons.security.exception.InvalidTokenException;
+
+import lombok.Getter;
 public class AuthenticationTokenFilter extends AbstractUsernamePasswordFilter {
 
 	private AuthenticationManager authenticationManager;
 	
-
-	public AuthenticationTokenFilter(AuthenticationManager authenticationManager){
+	@Getter
+	private String ignoredUrls[];
+	
+	@Getter
+	private String matchUrls[];
+	
+	
+	public AuthenticationTokenFilter(AuthenticationManager authenticationManager, String ignoreUrls[], String matchUrls[]) {
         this.authenticationManager = authenticationManager;
+        this.ignoredUrls = ignoreUrls;
+        this.matchUrls = matchUrls;
     }
 
 	@Override
@@ -36,10 +46,11 @@ public class AuthenticationTokenFilter extends AbstractUsernamePasswordFilter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String urlPath = httpServletRequest.getServletPath();
 		
-		boolean skip = httpServletRequest.getAttribute("excludeFilerToken") != null ? (Boolean)httpServletRequest.getAttribute("excludeFilerToken") : false;
+		//boolean skip = httpServletRequest.getAttribute("excludeFilerToken") != null ? (Boolean)httpServletRequest.getAttribute("excludeFilerToken") : false;
 		
+		//getMappedUrls(httpServletRequest.getSession().getServletContext());
 				
-		if (!super.isIgnored(urlPath) && !httpServletRequest.getMethod().equalsIgnoreCase("options") && !skip) {							
+		if (super.isMatchedUrl(urlPath) && !super.isIgnoredUrl(urlPath) && !httpServletRequest.getMethod().equalsIgnoreCase("options")) {							
 			try {
 				String header = httpServletRequest.getHeader("x-auth");
 		        // Make sure the header has the JWT token in it
@@ -67,9 +78,5 @@ public class AuthenticationTokenFilter extends AbstractUsernamePasswordFilter {
 		chain.doFilter(request, response);
 	}
 
-	@Override
-	public String[] getIgnoredUrls() {
-		return new String[]{"/public/**", "/JWK/**"};
-	}
 
 }
