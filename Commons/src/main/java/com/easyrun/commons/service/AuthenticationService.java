@@ -16,7 +16,7 @@ import com.easyrun.commons.rest.CloudRestTemplate;
 public class AuthenticationService {
 	
 	@Value("${services.auth.name}")
-	private String authServiceName;
+	private String authServiceName = "";
 	
 	@Autowired 
 	private LoadBalancerClient loadBalancer;
