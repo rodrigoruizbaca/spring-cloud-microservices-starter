@@ -25,14 +25,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.easyrun.commons.model.SpringSecurityAuditorAware;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCommandAspect;
+
 @Order(1)
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
 @EnableMongoAuditing
 @EnableCircuitBreaker
-@EnableMongoRepositories(basePackages = {"com.easyrun.auth.repository", "com.easyrun.commons.repository", "com.easyrun.auth.oauth2.repository"})
-@ComponentScan({"com.easyrun.commons", "com.easyrun.auth"})
+@EnableMongoRepositories(basePackages = { "com.easyrun.auth.repository", "com.easyrun.commons.repository",
+		"com.easyrun.auth.oauth2.repository" })
+@ComponentScan({ "com.easyrun.commons", "com.easyrun.auth" })
 public class AuthApplication extends AbstractMongoConfiguration {
 
 	@Value("${spring.data.mongo.uri}")
@@ -41,7 +44,6 @@ public class AuthApplication extends AbstractMongoConfiguration {
 	@Value("${spring.data.mongo.databaseName}")
 	private String databaseName;
 
-
 	@Override
 	public MongoClient mongoClient() {
 		MongoClientURI uri = new MongoClientURI(mongoUri);
@@ -49,23 +51,25 @@ public class AuthApplication extends AbstractMongoConfiguration {
 		return mongoClient;
 	}
 
+	@Bean
+	public HystrixCommandAspect hystrixAspect() {
+		return new HystrixCommandAspect();
+	}
 
 	@Override
 	protected String getDatabaseName() {
 		return databaseName;
 	}
-	
+
 	@Bean
-	public MongoDbFactory mongo() {		
-		SimpleMongoDbFactory factory = new SimpleMongoDbFactory(mongoClient(), databaseName);	    
-	    return factory;
+	public MongoDbFactory mongo() {
+		SimpleMongoDbFactory factory = new SimpleMongoDbFactory(mongoClient(), databaseName);
+		return factory;
 	}
 
-	
 	public static void main(String[] args) {
 		SpringApplication.run(AuthApplication.class, args);
 	}
-
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

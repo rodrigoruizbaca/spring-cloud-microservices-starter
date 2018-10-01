@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ import com.easyrun.commons.exception.EntityNotFoundException;
 import com.easyrun.commons.service.CrudSupportService;
 
 /**
- * Simple cache implemented as an example. A better implementation using redis or other kind of cache should may be used.
+ * Simple cache implemented as an example. A better implementation using redis or other kind of cache may be used.
  * @author rodrigo ruiz
  *
  */
@@ -28,7 +29,11 @@ public class RoleServiceCache implements CrudSupportService<RoleDto, String, QRo
 	Map<String, RoleDto> cache = new ConcurrentHashMap<>(100);
 	
 	@Override
-	public RoleDto add(RoleDto dto) {	
+	public RoleDto add(RoleDto dto) {
+		boolean exists = cache.values().stream().filter(role -> role.getRoleCd().equalsIgnoreCase(dto.getRoleCd())).count() > 1 ;
+		if (exists) {
+			throw new DuplicateKeyException("The key for entity " + dto.geUniqueKey() + " already exists");
+		}		
 		UUID uuid = UUID.randomUUID();
 		dto.setId(uuid.toString());
 		cache.put(dto.getId(), dto);

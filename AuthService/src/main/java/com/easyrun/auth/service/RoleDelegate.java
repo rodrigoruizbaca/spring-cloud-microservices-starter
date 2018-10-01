@@ -2,6 +2,7 @@ package com.easyrun.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.exception.EntityNotFoundException;
 import com.easyrun.commons.service.CrudSupportService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 @Service
 public class RoleDelegate {
@@ -21,9 +23,13 @@ public class RoleDelegate {
 	@Autowired
 	private RoleServiceCache cache; 
 	
-	@HystrixCommand(fallbackMethod = "addCache")
-	public RoleDto add(RoleDto dto) {
-		return service.add(dto);
+	@HystrixCommand(
+			ignoreExceptions = {EntityNotFoundException.class, DuplicateKeyException.class},			
+			commandProperties={
+					@HystrixProperty(value = "15000", name="execution.isolation.thread.timeoutInMilliseconds")
+			}, fallbackMethod = "addCache")
+	public RoleDto add(RoleDto dto) {		
+		return service.add(dto);		
 	}
 	
 	@HystrixCommand(fallbackMethod = "updateCache")
@@ -62,7 +68,7 @@ public class RoleDelegate {
 	}
 	
 	@SuppressWarnings("unused")
-	public void deleteCache(String id) throws EntityNotFoundException {
+	private void deleteCache(String id) throws EntityNotFoundException {
 		cache.delete(id);
 	}
 	
