@@ -3,7 +3,6 @@ package com.easyrun.auth.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.easyrun.auth.model.QRole;
+import com.easyrun.auth.service.RoleDelegate;
 import com.easyrun.commons.dto.ExistingValidator;
 import com.easyrun.commons.dto.NewValidator;
 import com.easyrun.commons.dto.RoleDto;
 import com.easyrun.commons.exception.EntityNotFoundException;
-import com.easyrun.commons.service.CrudSupportService;
 
 @RestController()
 @CrossOrigin
@@ -34,15 +33,15 @@ public class RoleController {
 	
 	
 	@Autowired
-	@Qualifier("roleService")
-	private CrudSupportService<RoleDto, String, QRole> service; 
+	private RoleDelegate service; 
+	
 	
 	@PostMapping()	
 	@PreAuthorize("@S.hasAuthorityAsPattern('add-role')")
-	public  ResponseEntity<?> addrole(@Validated(NewValidator.class) @RequestBody RoleDto role) {
+	public  ResponseEntity<?> addRole(@Validated(NewValidator.class) @RequestBody RoleDto role) {
 		return ResponseEntity.created(URI.create("/role")).body(service.add(role));
 	}	
-	
+		
 	@PatchMapping("/{id}")	
 	@PreAuthorize("@S.hasAuthorityAsPattern('update-role')")
 	public ResponseEntity<?> updateRole(@Validated(ExistingValidator.class) @RequestBody RoleDto role, @PathVariable String id) {
