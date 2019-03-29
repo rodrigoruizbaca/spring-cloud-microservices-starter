@@ -10,12 +10,15 @@ import org.springframework.stereotype.Component;
 @Component("S")
 public class SecurityService {
 	
-	
-	
 	@SuppressWarnings("unchecked")
-	public boolean hasAuthorityAsPattern(String pattern) {	
+	protected Collection<SimpleGrantedAuthority> getSignedAuthorities() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Collection<SimpleGrantedAuthority> auths = (Collection<SimpleGrantedAuthority>)authentication.getAuthorities();
+		return auths;
+	}
+		
+	public boolean hasAuthorityAsPattern(String pattern) {	
+		Collection<SimpleGrantedAuthority> auths = getSignedAuthorities();
 		return auths.stream().anyMatch(auth -> {
 			if (auth.getAuthority().equals("*")) {
 				return true;
